@@ -10,96 +10,68 @@
     <?php include 'includes/configuration.php'; ?>
     <header>
         <h1>Bienvenue sur Mon Site Web</h1>
-        <p>Découvrez notre contenu passionnant</p>
+        <p>Découvrez nos livres passionnants sur différents sports</p>
     </header>
     <div class="container">
     <?php
+        // Pagination
+        $elements_par_page = 5; // Nombre d'éléments à afficher par page
+        $page_actuelle = isset($_GET['page']) ? $_GET['page'] : 1; // Numéro de la page actuelle, par défaut 1
+
+        // Calcul de l'offset
+        $offset = ($page_actuelle - 1) * $elements_par_page;
+
+         if ($page_actuelle == 1): ?>
+            <a href="welcome.php" style="float: right;">Retour</a>
+        <?php endif; 
+
         // Récupérer les images et les informations de la base de données en utilisant les informations de connexion du fichier configuration.php
         try {
-            $sql = "SELECT id_sport, titre, auteur FROM sport"; // Modifiez la requête pour correspondre à votre base de données
+            $sql = "SELECT id_sport, titre, auteur FROM sport LIMIT $offset, $elements_par_page"; // Limiter les résultats par page
             $stmt = $pdo->query($sql);
 
             // Afficher les images et les informations
             echo '<div class="book-container">';
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $id_livre = $row["id_sport"];
+                $id_php = $id_livre . ".png";
                 echo '<div class="book-item">';
-                echo "<img class='book-image' src='assets/img/image_{$row['id_sport']}.png'>";
+                echo "<img class='book-image' src='assets/img/$id_php'>";
                 echo '<p>' . $row['titre'] . '</p>';
                 echo '<p>' . $row['auteur'] . '</p>';
-                echo '<a href="nouvelle_page.php?id=' . $row['id_sport'] . '" class="more-info-btn">En savoir plus</a>';
+                echo '<a href="information.php?information=' . $id_livre . '" class="more-info-btn">En savoir plus</a>';
                 echo '</div>';
             }
             echo '</div>';
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
         }
+
+        // Nombre total de pages
+        $sql_count = "SELECT COUNT(*) AS total FROM sport";
+        $stmt_count = $pdo->query($sql_count);
+        $total_rows = $stmt_count->fetch(PDO::FETCH_ASSOC)['total'];
+        $total_pages = ceil($total_rows / $elements_par_page);
+
+        // Afficher les liens de pagination
+        echo '<div class="pagination">';
+        if ($page_actuelle != 1) {
+            echo '<a href="?page=1" style="font-size:1em;"> << </a>'; // Bouton pour aller à la première page
+            echo '<a href="?page='.($page_actuelle - 1).'" style="font-size:1em;"> < </a>'; // Bouton pour aller à la page précédente
+        }
+        if ($page_actuelle > 1) {
+            echo '<a href="?page='.($page_actuelle - 1).'" style="font-size:1em;">'.($page_actuelle - 1).'</a>'; // Numéro de la page précédente
+        }
+        echo '<span class="current-page" style="font-size:1em;">' . $page_actuelle . '</span>'; // Numéro de la page actuelle en gras
+        if ($page_actuelle < $total_pages) {
+            echo '<a href="?page='.($page_actuelle + 1).'" style="font-size:1em;">'.($page_actuelle + 1).'</a>'; // Numéro de la page suivante
+        }
+        if ($page_actuelle != $total_pages) {
+            echo '<a href="?page='.($page_actuelle + 1).'" style="font-size:1em;"> > </a>'; // Bouton pour aller à la page suivante
+            echo '<a href="?page='.$total_pages.'" style="font-size:1em;"> >> </a>'; // Bouton pour aller à la dernière page
+        }
+        echo '</div>';
     ?>
     </div>
-    <footer>
-        <div class="navigation">
-            <button id="firstPageBtn" style="display: none;"><<</button>
-            <button id="prevPageBtn"><</button>
-            <span class="prev-page page-numbers" onclick="goToPage(currentPage - 1)"></span>
-            <span class="current-page" onclick="goToPage(currentPage)"></span>
-            <span class="next-page page-numbers" onclick="goToPage(currentPage + 1)"></span>
-            <button id="nextPageBtn">></button>
-            <button id="lastPageBtn">>></button>
-        </div>
-        <p>&copy; 2024 Mon Site Web. Tous droits réservés.</p>
-    </footer>
-    <script>
-        var currentPage = 1; // Page actuelle
-
-        // Mise à jour de la page actuelle après le chargement du document
-        document.addEventListener("DOMContentLoaded", function() {
-            updateCurrentPage();
-        });
-
-        document.getElementById("firstPageBtn").addEventListener("click", function() {
-            currentPage = 1;
-            updateCurrentPage();
-        });
-
-        document.getElementById("prevPageBtn").addEventListener("click", function() {
-            if (currentPage > 1) {
-                currentPage--;
-                updateCurrentPage();
-            }
-        });
-
-        document.getElementById("nextPageBtn").addEventListener("click", function() {
-            // Ajoutez ici votre logique pour naviguer vers la page suivante
-            currentPage++;
-            updateCurrentPage();
-        });
-
-        document.getElementById("lastPageBtn").addEventListener("click", function() {
-            // Ajoutez ici votre logique pour naviguer vers la dernière page
-            currentPage = 5; // Exemple : si vous avez 5 pages
-            updateCurrentPage();
-        });
-
-        function goToPage(page) {
-            if (page >= 1 && page <= 5) { // Modifier ici pour le nombre total de pages dans votre site web
-                currentPage = page;
-                updateCurrentPage();
-            }
-        }
-
-        function updateCurrentPage() {
-            document.querySelector(".current-page").textContent = currentPage;
-            document.querySelector(".prev-page").textContent = currentPage - 1 >= 1 ? currentPage - 1 : '';
-            document.querySelector(".next-page").textContent = currentPage < 5 ? currentPage + 1 : '';
-            
-            // Mettre à jour l'URL avec le numéro de page actuel
-            history.pushState({}, "", "?page=" + currentPage);
-
-            // Cacher ou afficher les boutons en fonction de la page actuelle
-            document.getElementById("firstPageBtn").style.display = currentPage === 1 ? "none" : "inline-block";
-            document.getElementById("prevPageBtn").style.display = currentPage === 1 ? "none" : "inline-block";
-            document.getElementById("nextPageBtn").style.display = currentPage === 5 ? "none" : "inline-block";
-            document.getElementById("lastPageBtn").style.display = currentPage === 5 ? "none" : "inline-block";
-        }
-    </script>
 </body>
 </html>

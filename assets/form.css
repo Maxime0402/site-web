@@ -6,7 +6,7 @@
             color: #333;
         }
         header {
-            background-color: #007bff;
+            background-color: #000000;
             color: #fff;
             padding: 20px 0;
             text-align: center;
@@ -26,7 +26,7 @@
         }
         .cta a {
             display: inline-block;
-            background-color: #007bff;
+            background-color: #2aea37;
             color: #fff;
             text-decoration: none;
             padding: 15px 30px;
@@ -35,36 +35,11 @@
             transition: background-color 0.3s ease;
         }
         .cta a:hover {
-            background-color: #0056b3;
+            background-color: #2aea37;
         }
         .navigation {
             text-align: center;
             margin-top: 20px;
-        }
-        .navigation button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin: 0 5px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-        .navigation button:hover {
-            background-color: #0056b3;
-        }
-        .current-page {
-            display: inline-block;
-            margin: 0 5px;
-            font-size: 1rem;
-            cursor: pointer; /* Ajout du curseur pointer */
-        }
-        .page-numbers {
-            font-size: 0.8rem;
-            color: #999;
-            margin: 0 5px;
-            cursor: pointer; /* Ajout du curseur pointer */
         }
         .book-container {
             display: flex;
@@ -81,4 +56,40 @@
             height: 600px; /* Taille fixe pour toutes les images */
             object-fit: cover; /* Pour ajuster la taille de l'image sans déformer */
             border-radius: 5px;
+        }
+        /* CSS pour redimensionner les images et modifier la police d'écriture */
+
+        /* Redimensionner les images */
+        img {
+            max-width: 100%;
+            height: 600px;
+            height: cover;
+        }
+
+        /* Modifier la police d'écriture */
+        body {
+            font-family: Arial, sans-serif; /* Remplacez "Arial, sans-serif" par la police de votre choix */
+            font-size: 16px; /* Taille de la police par défaut */
+        }
+
+        /* Modifier la police d'écriture pour les titres */
+        h1 {
+            font-size: 2rem; /* Taille du titre */
+            margin-bottom: 20px; /* Marge en bas du titre */
+        }
+        p {
+            font-weight: bold; /* Mettre le texte en gras */
+        }
+        .pagination a {
+            font-size: 1.5em; /* Taille de police plus grande */
+            padding: 5px 10px; /* Ajout de marge intérieure pour uniformiser la taille des boutons */
+        }
+        .separator {
+            display: none; /* Masquer le séparateur */
+        }
+        .current-page {
+            font-weight: bold; /* Rendre le numéro de page actuelle en gras */
+        }
+        .book-description {
+            float: left; /* Placer la description à gauche */
         }
