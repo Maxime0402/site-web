@@ -22,13 +22,13 @@
         $offset = ($page_actuelle - 1) * $elements_par_page;
 
          if ($page_actuelle == 1): ?>
-            <a href="welcome.php" style="float: right;">Retour</a>
+            <a href="welcome.php" style="float: right;">Connexion</a>
         <?php endif; 
 
         // Récupérer les images et les informations de la base de données en utilisant les informations de connexion du fichier configuration.php
         try {
             $sql = "SELECT id_sport, titre, auteur FROM sport LIMIT $offset, $elements_par_page"; // Limiter les résultats par page
-            $stmt = $pdo->query($sql);
+            $stmt = $conn->query($sql);
 
             // Afficher les images et les informations
             echo '<div class="book-container">';
@@ -49,7 +49,7 @@
 
         // Nombre total de pages
         $sql_count = "SELECT COUNT(*) AS total FROM sport";
-        $stmt_count = $pdo->query($sql_count);
+        $stmt_count = $conn->query($sql_count);
         $total_rows = $stmt_count->fetch(PDO::FETCH_ASSOC)['total'];
         $total_pages = ceil($total_rows / $elements_par_page);
 

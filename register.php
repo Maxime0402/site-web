@@ -1,12 +1,12 @@
-<!doctype html>
-<html lang = "fr">
+<html>
     <head>
-        <meta charset="UTF-8">
-        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+	    <title>Enregistrement</title>
+            <meta charset="UTF-8">
+            <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
         <title>Se créer un compte</title>
-        <link rel="stylesheet" href="assets/formulaire_stylax.css">
-    
+            <link rel="stylesheet" href="assets/formulaire_stylax.css">
     </head>
+
     <body>
         <form method="post" action="register.php">
             Login :<br>
@@ -18,41 +18,43 @@
             S'enregistrer :<br>
             <input type="submit" value="Envoyer"><br><br>
             <a href="log_in.php">J'ai deja un compte</a><br><br>
-            <?php
+        <?php
+            //including the database connection file
+            include_once("includes/configuration.php");
 
-                if (!empty($_POST)){
-
-                    include ('includes/configuration.php');
-                    echo "connection";
-                    $conn = connect();
-    
-                    $_POST['mdp'] = password_hash($_POST['mdp'], PASSWORD_DEFAULT);
-    
-                    // Préparer la requête d'insertion
-                    $requete = $conn->prepare("INSERT INTO connexion ( login, mdp) VALUES (:login, :mdp);");
+            if(isset($_POST['Envoyer'])) {	
+                $name = $_POST['login'];
+                $age = $_POST['mdp'];
                     
-                    // Récupération des données du formulaire
-                    $login = $_POST['login'];
-                    $mdp = $_POST['mdp'];
-                
-                    // Liaison des paramètres
-                    $requete->bindParam(':login', $login);
-                    $requete->bindParam(':mdp', $mdp);
-                
-                    // Exécution de la requête
-                    $result = $requete->execute(); 
-    
-                
-                    if ($result) {
-                        echo "Les données ont été insérées avec succès.";
-                        header("location: welcome.php");
-                    } else {
-                        echo "Erreur lors de l'insertion des données.";
+                // checking empty fields
+                if(empty($login) || empty($mdp)) {
+                            
+                    if(empty($login)) {
+                        echo "<font color='red'>Name field is empty.</font><br/>";
+                    }
+                    
+                    if(empty($mdp)) {
+                        echo "<font color='red'>Age field is empty.</font><br/>";
                     }
                 
-                
-            } 
+                } else { 
+                    // if all the fields are filled (not empty) 
+                        
+                    //insert data to database		
+                    $sql = "INSERT INTO connecter(login, mdp) VALUES(:login, :mdp)";
+                    $query = $conn->prepare($sql);
+                            
+                    $query->bindparam(':login', $login);
+                    $query->bindparam(':mdp', $mdp);
+                    $query->execute();
+                    
+                    // Alternative to above bindparam and execute
+                    
+                    //display success message
+                    echo "<font color='green'>Data added successfully.";
+                    echo "<br/><a href='index.php'>View Result</a>";
+                }
+            }
         ?>
-        </form>
     </body>
 </html>

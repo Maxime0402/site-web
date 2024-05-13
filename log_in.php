@@ -20,7 +20,6 @@
                 if (!empty($_POST)) {
                     // Connexion à la base de données
                     include ('includes/configuration.php');
-                    $conn = connect();
 
                     // Récupérer les données du formulaire
                     $login = $_POST['login'];
